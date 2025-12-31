@@ -26,8 +26,6 @@ export default function HomePage() {
     {
       icon: Calendar,
       title: "Smart Calendar",
-      description:
-        "Upload syllabi and automatically populate your calendar with assignments and exams",
       color: "text-blue-600",
       bgColor: "bg-blue-50",
       delay: "delay-100",
@@ -35,8 +33,6 @@ export default function HomePage() {
     {
       icon: Users,
       title: "Project Management",
-      description:
-        "Collaborate with classmates on group projects with task management and file sharing",
       color: "text-green-600",
       bgColor: "bg-green-50",
       delay: "delay-200",
@@ -44,8 +40,6 @@ export default function HomePage() {
     {
       icon: Focus,
       title: "Focus Mode",
-      description:
-        "Block distracting websites and track study time for better productivity",
       color: "text-purple-600",
       bgColor: "bg-purple-50",
       delay: "delay-300",
@@ -53,8 +47,6 @@ export default function HomePage() {
     {
       icon: BookOpen,
       title: "Course Management",
-      description:
-        "Organize all your courses, assignments, and study materials in one place",
       color: "text-orange-600",
       bgColor: "bg-orange-50",
       delay: "delay-400",
