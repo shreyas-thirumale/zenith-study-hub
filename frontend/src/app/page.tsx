@@ -133,9 +133,6 @@ export default function HomePage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-center leading-relaxed">
-                    {feature.description}
-                  </CardDescription>
                 </CardContent>
               </Card>
             );
