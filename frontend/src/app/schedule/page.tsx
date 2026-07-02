@@ -137,7 +137,7 @@ export default function SchedulePage() {
   }
   const handleToday = () => setWeekStart(getWeekStart(new Date()))
 
-  const handleSlotClick = (date: Date, hour: number) => {
+  const handleSlotClick = (_date: Date, _hour: number) => {
     // Future: open quick-add event dialog
   }
 

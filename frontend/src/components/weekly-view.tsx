@@ -32,7 +32,7 @@ interface WeeklyViewProps {
   onPrevWeek: () => void
   onNextWeek: () => void
   onToday: () => void
-  onSlotClick: (date: Date, hour: number) => void
+  onSlotClick: (_date: Date, _hour: number) => void
 }
 
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
