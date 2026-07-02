@@ -41,8 +41,10 @@ const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const SLOT_HEIGHT = 60 // px per hour
 
 function timeToMinutes(t: string): number {
-  const [h, m] = t.split(':').map(Number)
-  return h * 60 + (m || 0)
+  const parts = t.split(':').map(Number)
+  const h = parts[0] ?? 0
+  const m = parts[1] ?? 0
+  return h * 60 + m
 }
 
 function formatHour(h: number): string {
