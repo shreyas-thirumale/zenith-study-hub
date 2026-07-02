@@ -146,14 +146,19 @@ export function CalendarView({ events, onDateClick, selectedDate }: CalendarView
               onClick={() => handleDateClick(day)}
               className={`
                 aspect-square p-2 rounded-lg border transition-all duration-200
-                hover:border-primary hover:shadow-md hover:-translate-y-0.5
-                ${today ? 'border-primary bg-primary/10' : 'border-border'}
-                ${selected ? 'bg-primary/20 border-primary' : ''}
+                hover:border-primary/50 hover:shadow-md hover:-translate-y-0.5
+                ${selected ? 'border-2 border-primary shadow-sm' : 'border-border'}
                 ${dayEvents.length > 0 ? 'font-semibold' : ''}
                 relative group
               `}
             >
-              <div className="text-sm">{day}</div>
+              <div className={`text-sm ${today ? 'text-primary font-bold' : ''}`}>
+                {today ? (
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold">
+                    {day}
+                  </span>
+                ) : day}
+              </div>
               {dayEvents.length > 0 && (
                 <div className="absolute bottom-1 left-1/2 -translate-x-1/2 flex gap-1">
                   {dayEvents.slice(0, 3).map((event, idx) => (
