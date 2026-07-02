@@ -14,7 +14,6 @@ export function Providers({ children }: ProvidersProps) {
       attribute="class"
       defaultTheme="dark"
       enableSystem={false}
-      disableTransitionOnChange
       storageKey="zenith-theme"
     >
       {children}

@@ -110,46 +110,46 @@
 @layer components {
   /* Modern animations */
   .animate-slide-up {
-    animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideUp 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     opacity: 0;
   }
   
   .animate-slide-down {
-    animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideDown 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   
   .animate-slide-left {
-    animation: slideLeft 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideLeft 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   
   .animate-slide-right {
-    animation: slideRight 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: slideRight 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   }
   
   .animate-fade-in {
-    animation: fadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeIn 0.6s ease forwards;
     opacity: 0;
   }
   
   .animate-scale-in {
-    animation: scaleIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: scaleIn 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     opacity: 0;
   }
   
   .animate-swipe-up {
-    animation: swipeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: swipeUp 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     opacity: 0;
   }
   
   /* Staggered animations */
-  .animate-stagger-1 { animation-delay: 0.15s; }
-  .animate-stagger-2 { animation-delay: 0.3s; }
-  .animate-stagger-3 { animation-delay: 0.45s; }
-  .animate-stagger-4 { animation-delay: 0.6s; }
+  .animate-stagger-1 { animation-delay: 0.1s; }
+  .animate-stagger-2 { animation-delay: 0.2s; }
+  .animate-stagger-3 { animation-delay: 0.35s; }
+  .animate-stagger-4 { animation-delay: 0.5s; }
   
   /* Hover effects */
   .hover-lift {
-    @apply transition-all duration-200 ease-out;
+    @apply transition-all duration-300 ease-out;
   }
   
   .hover-lift:hover {
@@ -167,19 +167,51 @@
   
   /* Modern card styles */
   .modern-card {
-    @apply bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-200;
+    @apply bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl shadow-sm hover:shadow-md transition-all duration-300;
+  }
+
+  /* Gradient button with smooth hover fade */
+  .btn-gradient {
+    position: relative;
+    isolation: isolate;
+    @apply transition-transform duration-300 ease-out;
+  }
+
+  .btn-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(to right, #1d4ed8, #9333ea);
+    transition: opacity 0.4s ease;
+    z-index: -1;
+  }
+
+  .btn-gradient::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: transparent;
+    transition: opacity 0.4s ease;
+    z-index: -1;
+  }
+
+  .btn-gradient:hover::before {
+    opacity: 0;
+  }
+
+  .btn-gradient:hover {
+    transform: scale(1.05);
   }
 }
 
 @keyframes slideUp {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(40px);
+    transform: translateY(30px);
   }
-  60% {
-    opacity: 0.8;
-  }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0);
   }
@@ -188,7 +220,7 @@
 @keyframes slideDown {
   from {
     opacity: 0;
-    transform: translateY(-20px);
+    transform: translateY(-16px);
   }
   to {
     opacity: 1;
@@ -199,7 +231,7 @@
 @keyframes slideLeft {
   from {
     opacity: 0;
-    transform: translateX(20px);
+    transform: translateX(16px);
   }
   to {
     opacity: 1;
@@ -210,7 +242,7 @@
 @keyframes slideRight {
   from {
     opacity: 0;
-    transform: translateX(-20px);
+    transform: translateX(-16px);
   }
   to {
     opacity: 1;
@@ -219,42 +251,31 @@
 }
 
 @keyframes fadeIn {
-  0% {
+  from {
     opacity: 0;
   }
-  50% {
-    opacity: 0.5;
-  }
-  100% {
+  to {
     opacity: 1;
   }
 }
 
 @keyframes scaleIn {
-  0% {
+  from {
     opacity: 0;
-    transform: scale(0.9) translateY(20px);
+    transform: scale(0.95) translateY(16px);
   }
-  60% {
-    opacity: 0.8;
-    transform: scale(1.02) translateY(-2px);
-  }
-  100% {
+  to {
     opacity: 1;
     transform: scale(1) translateY(0);
   }
 }
 
 @keyframes swipeUp {
-  0% {
+  from {
     opacity: 0;
-    transform: translateY(60px) scale(0.95);
+    transform: translateY(40px) scale(0.97);
   }
-  60% {
-    opacity: 0.8;
-    transform: translateY(-5px) scale(1);
-  }
-  100% {
+  to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
