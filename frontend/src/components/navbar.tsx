@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useAuthStore } from "@/store/authStore";
-import { GraduationCap, LogOut, User } from "lucide-react";
+import { GraduationCap, LogOut, User, CalendarDays } from "lucide-react";
 
 interface NavbarProps {
   title?: string;
@@ -49,6 +49,16 @@ export function Navbar({ title }: NavbarProps) {
 
           {/* Right side - User info and actions */}
           <div className="flex items-center space-x-3 animate-slide-left">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => router.push("/schedule")}
+              className="hover-lift hidden sm:flex items-center gap-1.5"
+            >
+              <CalendarDays className="h-4 w-4" />
+              <span className="hidden md:inline">Schedule</span>
+            </Button>
+
             {user && (
               <div className="hidden md:flex items-center space-x-2 px-3 py-2 bg-muted rounded-lg">
                 <User className="h-4 w-4 text-muted-foreground" />

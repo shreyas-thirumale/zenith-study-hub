@@ -402,11 +402,11 @@ app.post('/api/focus/:id/end', authMiddleware, (req, res) => {
 
 // Courses routes
 app.get('/api/courses', authMiddleware, (req, res) => {
-  res.json(courses);
+  res.json(courses.filter(c => c.user_id === req.userId));
 });
 
 app.post('/api/courses', authMiddleware, (req, res) => {
-  const { name, code, color } = req.body;
+  const { name, code, color, days, start_time, end_time, location } = req.body;
   
   if (!name || !code) {
     return res.status(400).json({ error: 'Course name and code are required' });
@@ -417,12 +417,34 @@ app.post('/api/courses', authMiddleware, (req, res) => {
     name,
     code,
     color: color || '#6B7280',
+    days: days || [],          // e.g. ["Mon","Wed","Fri"]
+    start_time: start_time || null,  // e.g. "09:00"
+    end_time: end_time || null,      // e.g. "10:15"
+    location: location || null,
     user_id: req.userId,
     created_at: new Date().toISOString()
   };
 
   courses.push(newCourse);
   res.status(201).json(newCourse);
+});
+
+app.put('/api/courses/:id', authMiddleware, (req, res) => {
+  const courseId = parseInt(req.params.id);
+  const idx = courses.findIndex(c => c.id === courseId && c.user_id === req.userId);
+  if (idx === -1) return res.status(404).json({ error: 'Course not found' });
+
+  const { name, code, color, days, start_time, end_time, location } = req.body;
+  courses[idx] = { ...courses[idx], name, code, color, days, start_time, end_time, location };
+  res.json(courses[idx]);
+});
+
+app.delete('/api/courses/:id', authMiddleware, (req, res) => {
+  const courseId = parseInt(req.params.id);
+  const idx = courses.findIndex(c => c.id === courseId && c.user_id === req.userId);
+  if (idx === -1) return res.status(404).json({ error: 'Course not found' });
+  courses.splice(idx, 1);
+  res.json({ message: 'Course deleted' });
 });
 
 // Syllabus routes
