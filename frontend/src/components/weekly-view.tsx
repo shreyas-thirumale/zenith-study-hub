@@ -92,8 +92,8 @@ export function WeeklyView({
   const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 
   // Derive week label
-  const firstDay = weekDays[0]
-  const lastDay  = weekDays[6]
+  const firstDay = weekDays[0]!
+  const lastDay  = weekDays[6]!
   const weekLabel =
     firstDay.getMonth() === lastDay.getMonth()
       ? `${monthNames[firstDay.getMonth()]} ${firstDay.getFullYear()}`
