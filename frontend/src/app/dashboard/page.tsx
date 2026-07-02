@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/authStore";
 import {
@@ -25,38 +25,28 @@ export default function DashboardPage() {
     courses: 0,
   });
 
-  useEffect(() => {
-    // Initialize session and load stats
-    const init = async () => {
-      await initializeSession();
-      loadDashboardStats();
-    };
-    init();
-  }, []);
-
-  const loadDashboardStats = async () => {
+  const loadDashboardStats = useCallback(async () => {
     try {
-      // Fetch real data from API
-      const [eventsRes, projectsRes, sessionsRes, coursesRes] = await Promise.all([
+      const [eventsRes, projectsRes, focusStatsRes, coursesRes] = await Promise.all([
         api.get('/calendar').catch(() => ({ data: [] })),
         api.get('/projects').catch(() => ({ data: [] })),
-        api.get('/focus/sessions').catch(() => ({ data: [] })),
+        api.get('/focus/stats').catch(() => ({ data: { weekHours: 0 } })),
         api.get('/courses').catch(() => ({ data: [] })),
       ]);
 
       const events = eventsRes.data;
       const projects = projectsRes.data;
-      const sessions = sessionsRes.data;
+      const focusStats = focusStatsRes.data;
       const courses = coursesRes.data;
 
       // Calculate upcoming events (next 7 days)
       const today = new Date();
       const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
-      const upcomingEvents = Array.isArray(events) 
+      const upcomingEvents = Array.isArray(events)
         ? events.filter((e: any) => {
             const eventDate = new Date(e.date);
             return eventDate >= today && eventDate <= nextWeek;
-          }).length 
+          }).length
         : 0;
 
       // Count active projects
@@ -64,32 +54,34 @@ export default function DashboardPage() {
         ? projects.filter((p: any) => p.status === 'active').length
         : 0;
 
-      // Calculate focus hours this week
-      const weekStart = new Date(today);
-      weekStart.setDate(today.getDate() - today.getDay());
-      const focusHours = Array.isArray(sessions)
-        ? sessions
-            .filter((s: any) => new Date(s.started_at) >= weekStart)
-            .reduce((total: number, s: any) => total + (s.duration || 0), 0) / 3600
-        : 0;
-
       setStats({
         upcomingEvents,
         activeProjects,
-        focusHours: Math.round(focusHours),
+        focusHours: focusStats.weekHours ?? 0,
         courses: Array.isArray(courses) ? courses.length : 0,
       });
     } catch (error) {
       console.error('Error loading dashboard stats:', error);
-      // Keep stats at 0 if there's an error
-      setStats({
-        upcomingEvents: 0,
-        activeProjects: 0,
-        focusHours: 0,
-        courses: 0,
-      });
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    const init = async () => {
+      await initializeSession();
+      loadDashboardStats();
+    };
+    init();
+
+    // Re-fetch whenever the user navigates back to this tab/window
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        loadDashboardStats();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loadDashboardStats]);
 
   return (
     <div className="min-h-screen bg-background">
@@ -148,7 +140,7 @@ export default function DashboardPage() {
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold text-purple-500">
-                {stats.focusHours}
+                {stats.focusHours}h
               </div>
               <p className="text-xs text-muted-foreground">This week</p>
             </CardContent>

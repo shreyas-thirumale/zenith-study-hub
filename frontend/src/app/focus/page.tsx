@@ -30,8 +30,24 @@ interface FocusSession {
   status?: string;
 }
 
+interface FocusStats {
+  weekSeconds: number;
+  weekMinutes: number;
+  weekHours: number;
+  totalSeconds: number;
+  totalMinutes: number;
+  sessionsThisWeek: number;
+  totalSessions: number;
+  averageSessionMinutes: number;
+}
+
 export default function FocusPage() {
   const [sessions, setSessions] = useState<FocusSession[]>([]);
+  const [focusStats, setFocusStats] = useState<FocusStats>({
+    weekSeconds: 0, weekMinutes: 0, weekHours: 0,
+    totalSeconds: 0, totalMinutes: 0,
+    sessionsThisWeek: 0, totalSessions: 0, averageSessionMinutes: 0,
+  });
   const [loading, setLoading] = useState(true);
   const [activeSession, setActiveSession] = useState<FocusSession | null>(null);
   const [timer, setTimer] = useState(0);
@@ -59,8 +75,12 @@ export default function FocusPage() {
 
   const loadSessions = async () => {
     try {
-      const response = await api.get("/focus/sessions");
-      setSessions(response.data);
+      const [sessionsRes, statsRes] = await Promise.all([
+        api.get("/focus/sessions"),
+        api.get("/focus/stats"),
+      ]);
+      setSessions(sessionsRes.data);
+      setFocusStats(statsRes.data);
     } catch (error) {
       toast.error("Failed to load focus sessions");
     } finally {
@@ -127,10 +147,6 @@ export default function FocusPage() {
       hour: "2-digit",
       minute: "2-digit",
     });
-  };
-
-  const getTotalFocusTime = () => {
-    return sessions.reduce((total, session) => total + session.duration, 0);
   };
 
   return (
@@ -297,28 +313,34 @@ export default function FocusPage() {
               <CardContent className="space-y-4">
                 <div className="text-center animate-fade-in animate-stagger-1">
                   <div className="text-3xl font-bold text-primary">
-                    {formatDuration(getTotalFocusTime())}
+                    {formatDuration(focusStats.weekSeconds)}
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    This Week
+                  </p>
+                </div>
+
+                <div className="text-center animate-fade-in animate-stagger-2">
+                  <div className="text-3xl font-bold text-purple-500">
+                    {formatDuration(focusStats.totalSeconds)}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Total Focus Time
                   </p>
                 </div>
 
-                <div className="text-center animate-fade-in animate-stagger-2">
+                <div className="text-center animate-fade-in animate-stagger-3">
                   <div className="text-2xl font-bold text-green-600">
-                    {sessions.length}
+                    {focusStats.totalSessions}
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Sessions Completed
                   </p>
                 </div>
 
-                <div className="text-center animate-fade-in animate-stagger-3">
+                <div className="text-center animate-fade-in animate-stagger-4">
                   <div className="text-2xl font-bold text-purple-600">
-                    {sessions.length > 0
-                      ? Math.round(getTotalFocusTime() / sessions.length / 60)
-                      : 0}
-                    m
+                    {focusStats.averageSessionMinutes}m
                   </div>
                   <p className="text-sm text-muted-foreground">
                     Average Session

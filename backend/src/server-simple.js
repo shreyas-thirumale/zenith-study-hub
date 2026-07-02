@@ -339,6 +339,29 @@ app.get('/api/focus/sessions', authMiddleware, (req, res) => {
   res.json(userSessions);
 });
 
+app.get('/api/focus/stats', authMiddleware, (req, res) => {
+  const userSessions = focus_sessions.filter(s => s.user_id === req.userId && s.ended_at);
+
+  const weekStart = new Date();
+  weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+  weekStart.setHours(0, 0, 0, 0);
+
+  const weekSessions = userSessions.filter(s => new Date(s.started_at) >= weekStart);
+  const weekSeconds = weekSessions.reduce((total, s) => total + (s.duration || 0), 0);
+  const totalSeconds = userSessions.reduce((total, s) => total + (s.duration || 0), 0);
+
+  res.json({
+    weekSeconds,
+    weekMinutes: Math.round(weekSeconds / 60),
+    weekHours: Math.round((weekSeconds / 3600) * 10) / 10,
+    totalSeconds,
+    totalMinutes: Math.round(totalSeconds / 60),
+    sessionsThisWeek: weekSessions.length,
+    totalSessions: userSessions.length,
+    averageSessionMinutes: userSessions.length > 0 ? Math.round(totalSeconds / userSessions.length / 60) : 0,
+  });
+});
+
 app.post('/api/focus/start', authMiddleware, (req, res) => {
   const { course_id, duration } = req.body;
   
