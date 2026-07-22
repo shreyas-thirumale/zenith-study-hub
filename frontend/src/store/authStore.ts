@@ -1,133 +1,68 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
-import { api } from '@/lib/api'
-import Cookies from 'js-cookie'
-
-interface User {
-  id: string | number
-  name: string
-  email: string
-}
+import { supabase } from '@/lib/supabase'
+import type { User, Session } from '@supabase/supabase-js'
 
 interface AuthState {
   user: User | null
-  isAuthenticated: boolean
+  session: Session | null
   isLoading: boolean
-  login: (email: string, password: string) => Promise<void>
-  register: (name: string, email: string, password: string) => Promise<void>
-  startDemoSession: () => Promise<void>
+  // Auth actions
+  signInWithGoogle: () => Promise<void>
+  signInWithEmail: (email: string, password: string) => Promise<void>
+  signUpWithEmail: (email: string, password: string, name: string) => Promise<void>
+  signOut: () => Promise<void>
+  // Internal
+  setSession: (session: Session | null) => void
   initializeSession: () => Promise<void>
-  logout: () => void
-  setUser: (user: User) => void
 }
 
-export const useAuthStore = create<AuthState>()(
-  persist(
-    (set) => ({
-      user: null,
-      isAuthenticated: false,
-      isLoading: false,
-      
-      login: async (email: string, password: string) => {
-        set({ isLoading: true })
-        try {
-          const response = await api.post('/auth/login', { email, password })
-          const { user, token } = response.data
-          
-          // Store token in cookie
-          Cookies.set('token', token, { expires: 7 })
-          
-          set({ 
-            user, 
-            isAuthenticated: true, 
-            isLoading: false 
-          })
-        } catch (error) {
-          set({ isLoading: false })
-          throw error
-        }
+export const useAuthStore = create<AuthState>((set, get) => ({
+  user: null,
+  session: null,
+  isLoading: true,
+
+  setSession: (session) => {
+    set({ session, user: session?.user ?? null, isLoading: false })
+  },
+
+  initializeSession: async () => {
+    set({ isLoading: true })
+    const { data: { session } } = await supabase.auth.getSession()
+    set({ session, user: session?.user ?? null, isLoading: false })
+
+    // Listen for auth changes (login, logout, token refresh)
+    supabase.auth.onAuthStateChange((_event, session) => {
+      set({ session, user: session?.user ?? null })
+    })
+  },
+
+  signInWithGoogle: async () => {
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${window.location.origin}/dashboard`,
       },
-      
-      register: async (name: string, email: string, password: string) => {
-        set({ isLoading: true })
-        try {
-          const response = await api.post('/auth/register', { name, email, password })
-          const { user, token } = response.data
-          
-          // Store token in cookie
-          Cookies.set('token', token, { expires: 7 })
-          
-          set({ 
-            user, 
-            isAuthenticated: true, 
-            isLoading: false 
-          })
-        } catch (error) {
-          set({ isLoading: false })
-          throw error
-        }
+    })
+  },
+
+  signInWithEmail: async (email, password) => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    if (error) throw error
+  },
+
+  signUpWithEmail: async (email, password, name) => {
+    const { error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name },
       },
-      
-      startDemoSession: async () => {
-        // Only create new session if no token exists
-        const existingToken = Cookies.get('token')
-        if (existingToken) {
-          // Already have a session, don't create new one
-          return
-        }
-        
-        set({ isLoading: true })
-        try {
-          const response = await api.post('/auth/demo')
-          const { user, token } = response.data
-          
-          // Store token in cookie
-          Cookies.set('token', token, { expires: 7 })
-          
-          set({ 
-            user, 
-            isAuthenticated: true, 
-            isLoading: false 
-          })
-        } catch (error) {
-          set({ isLoading: false })
-          throw error
-        }
-      },
-      
-      initializeSession: async () => {
-        const token = Cookies.get('token')
-        const state = useAuthStore.getState()
-        
-        if (!token && !state.user) {
-          // No token and no user - start fresh demo session
-          try {
-            await state.startDemoSession()
-          } catch (error) {
-            console.error('Failed to start demo session:', error)
-          }
-        }
-        // If we have a token, the API will use it automatically
-      },
-      
-      logout: () => {
-        Cookies.remove('token')
-        set({ 
-          user: null, 
-          isAuthenticated: false 
-        })
-      },
-      
-      setUser: (user: User) => {
-        set({ user, isAuthenticated: true })
-      }
-    }),
-    {
-      name: 'auth-storage',
-      partialize: (state) => ({ 
-        user: state.user, 
-        isAuthenticated: state.isAuthenticated 
-      }),
-    }
-  )
-)
+    })
+    if (error) throw error
+  },
+
+  signOut: async () => {
+    await supabase.auth.signOut()
+    set({ user: null, session: null })
+  },
+}))

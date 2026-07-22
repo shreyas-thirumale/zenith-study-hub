@@ -35,8 +35,7 @@ interface WeeklyViewProps {
   onSlotClick: (_date: Date, _hour: number) => void
 }
 
-const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
-const DAY_KEYS   = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+const DAY_LABELS: string[] = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 const HOURS = Array.from({ length: 24 }, (_, i) => i)
 const SLOT_HEIGHT = 60 // px per hour
 
@@ -54,12 +53,16 @@ function formatHour(h: number): string {
   return `${h - 12} PM`
 }
 
+function getDayKey(dayIndex: number): string {
+  return DAY_LABELS[dayIndex] ?? 'Sun'
+}
+
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  assignment: 'bg-blue-500/20 border-blue-500 text-blue-400',
-  exam:       'bg-red-500/20 border-red-500 text-red-400',
+  assignment:   'bg-blue-500/20 border-blue-500 text-blue-400',
+  exam:         'bg-red-500/20 border-red-500 text-red-400',
   presentation: 'bg-purple-500/20 border-purple-500 text-purple-400',
-  reading:    'bg-yellow-500/20 border-yellow-500 text-yellow-400',
-  custom:     'bg-gray-500/20 border-gray-500 text-gray-400',
+  reading:      'bg-yellow-500/20 border-yellow-500 text-yellow-400',
+  custom:       'bg-gray-500/20 border-gray-500 text-gray-400',
 }
 
 export function WeeklyView({
@@ -80,7 +83,7 @@ export function WeeklyView({
     }
   }, [])
 
-  const weekDays = Array.from({ length: 7 }, (_, i) => {
+  const weekDays: Date[] = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(currentWeekStart)
     d.setDate(currentWeekStart.getDate() + i)
     return d
@@ -89,17 +92,20 @@ export function WeeklyView({
   const today = new Date()
   const todayStr = today.toISOString().split('T')[0]
 
-  const monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+  const monthNames: string[] = [
+    'Jan','Feb','Mar','Apr','May','Jun',
+    'Jul','Aug','Sep','Oct','Nov','Dec',
+  ]
 
-  // Derive week label
-  const firstDay = weekDays[0]!
-  const lastDay  = weekDays[6]!
+  // Derive week label — weekDays always has 7 elements so these casts are safe
+  const firstDay = weekDays[0] as Date
+  const lastDay  = weekDays[6] as Date
   const weekLabel =
     firstDay.getMonth() === lastDay.getMonth()
-      ? `${monthNames[firstDay.getMonth()]} ${firstDay.getFullYear()}`
-      : `${monthNames[firstDay.getMonth()]} – ${monthNames[lastDay.getMonth()]} ${lastDay.getFullYear()}`
+      ? `${monthNames[firstDay.getMonth()] ?? ''} ${firstDay.getFullYear()}`
+      : `${monthNames[firstDay.getMonth()] ?? ''} – ${monthNames[lastDay.getMonth()] ?? ''} ${lastDay.getFullYear()}`
 
-  // Current time indicator
+  // Current time indicator position
   const nowMinutes = today.getHours() * 60 + today.getMinutes()
   const nowTop = (nowMinutes / 60) * SLOT_HEIGHT
 
@@ -119,19 +125,20 @@ export function WeeklyView({
           </Button>
         </div>
         <h2 className="text-lg font-semibold">{weekLabel}</h2>
-        <div className="w-32" /> {/* spacer */}
+        <div className="w-32" />
       </div>
 
       {/* Day header row */}
       <div className="flex border-b border-border/50">
-        {/* Time gutter */}
         <div className="w-14 shrink-0" />
         {weekDays.map((day, i) => {
           const dateStr = day.toISOString().split('T')[0]
           const isToday = dateStr === todayStr
           return (
             <div key={i} className="flex-1 text-center py-2 border-l border-border/30">
-              <div className="text-xs text-muted-foreground font-medium">{DAY_LABELS[i]}</div>
+              <div className="text-xs text-muted-foreground font-medium">
+                {DAY_LABELS[i] ?? ''}
+              </div>
               <div className={`
                 text-sm font-bold mx-auto mt-0.5 w-8 h-8 flex items-center justify-center rounded-full
                 ${isToday ? 'bg-primary text-primary-foreground' : 'text-foreground'}
@@ -163,11 +170,14 @@ export function WeeklyView({
           {weekDays.map((day, colIdx) => {
             const dateStr = day.toISOString().split('T')[0]
             const isToday = dateStr === todayStr
-            const dayKey = DAY_KEYS[day.getDay()]
+            const dayKey: string = getDayKey(day.getDay())
 
             // Recurring class blocks for this day
             const classBlocks = courses.filter(c =>
-              c.days?.includes(dayKey) && c.start_time && c.end_time
+              Array.isArray(c.days) &&
+              c.days.includes(dayKey) &&
+              c.start_time != null &&
+              c.end_time != null
             )
 
             // One-off events for this day that have a time
@@ -213,10 +223,10 @@ export function WeeklyView({
 
                 {/* Recurring class blocks */}
                 {classBlocks.map(course => {
-                  const startMin = timeToMinutes(course.start_time!)
-                  const endMin   = timeToMinutes(course.end_time!)
-                  const top    = (startMin / 60) * SLOT_HEIGHT
-                  const height = ((endMin - startMin) / 60) * SLOT_HEIGHT
+                  const startMin = timeToMinutes(course.start_time as string)
+                  const endMin   = timeToMinutes(course.end_time as string)
+                  const top      = (startMin / 60) * SLOT_HEIGHT
+                  const height   = ((endMin - startMin) / 60) * SLOT_HEIGHT
 
                   return (
                     <div
@@ -244,9 +254,9 @@ export function WeeklyView({
 
                 {/* One-off timed events */}
                 {dayEvents.map(event => {
-                  const startMin = timeToMinutes(event.time!)
-                  const top = (startMin / 60) * SLOT_HEIGHT
-                  const colorClass = EVENT_TYPE_COLORS[event.type] ?? EVENT_TYPE_COLORS.custom
+                  const startMin   = timeToMinutes(event.time as string)
+                  const top        = (startMin / 60) * SLOT_HEIGHT
+                  const colorClass = EVENT_TYPE_COLORS[event.type] ?? EVENT_TYPE_COLORS['custom'] ?? ''
 
                   return (
                     <div

@@ -12,10 +12,10 @@ interface NavbarProps {
 
 export function Navbar({ title }: NavbarProps) {
   const router = useRouter();
-  const { user, logout } = useAuthStore();
+  const { user, signOut } = useAuthStore();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await signOut();
     router.push("/auth/login");
   };
 
@@ -62,7 +62,7 @@ export function Navbar({ title }: NavbarProps) {
             {user && (
               <div className="hidden md:flex items-center space-x-2 px-3 py-2 bg-muted rounded-lg">
                 <User className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm font-medium">{user.name}</span>
+                <span className="text-sm font-medium">{user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'User'}</span>
               </div>
             )}
             
