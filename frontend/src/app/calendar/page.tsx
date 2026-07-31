@@ -56,10 +56,10 @@ export default function CalendarPage() {
 
   const getEventTypeColor = (type: string) => {
     switch (type) {
-      case 'assignment':   return 'bg-blue-500/10 text-blue-600 border-blue-500/20'
-      case 'exam':         return 'bg-red-500/10 text-red-600 border-red-500/20'
-      case 'presentation': return 'bg-purple-500/10 text-purple-600 border-purple-500/20'
-      default:             return 'bg-gray-500/10 text-gray-600 border-gray-500/20'
+      case 'assignment':   return 'bg-white/10 text-foreground border-white/20'
+      case 'exam':         return 'bg-destructive/10 text-destructive border-destructive/20'
+      case 'presentation': return 'bg-white/15 text-foreground border-white/20'
+      default:             return 'bg-white/5 text-muted-foreground border-white/10'
     }
   }
 
@@ -148,11 +148,11 @@ export default function CalendarPage() {
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Assignments</span>
-                    <span className="font-medium text-blue-600">{events.filter(e => e.type === 'assignment').length}</span>
+                    <span className="font-medium text-foreground">{events.filter(e => e.type === 'assignment').length}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground">Exams</span>
-                    <span className="font-medium text-red-600">{events.filter(e => e.type === 'exam').length}</span>
+                    <span className="font-medium text-destructive">{events.filter(e => e.type === 'exam').length}</span>
                   </div>
                 </CardContent>
               </Card>

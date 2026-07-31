@@ -40,7 +40,7 @@ export default function DashboardPage() {
       <Navbar title="Dashboard" />
 
       {/* Welcome Section */}
-      <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-b">
+      <div className="border-b" style={{ background: 'rgba(59, 130, 246, 0.08)' }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <h2 className="text-2xl font-bold text-foreground mb-1">
             Welcome back, {user?.user_metadata?.full_name ?? user?.email?.split('@')[0] ?? 'Student'}!
@@ -68,10 +68,10 @@ export default function DashboardPage() {
           <Card className="modern-card hover-lift animate-scale-in animate-stagger-2">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-              <Users className="h-4 w-4 text-green-500" />
+              <Users className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-green-500">{activeProjects}</div>
+              <div className="text-2xl font-bold text-primary">{activeProjects}</div>
               <p className="text-xs text-muted-foreground">In progress</p>
             </CardContent>
           </Card>
@@ -79,10 +79,10 @@ export default function DashboardPage() {
           <Card className="modern-card hover-lift animate-scale-in animate-stagger-3">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Focus Hours</CardTitle>
-              <Focus className="h-4 w-4 text-purple-500" />
+              <Focus className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-purple-500">
+              <div className="text-2xl font-bold text-primary">
                 {focusStats?.weekHours ?? 0}h
               </div>
               <p className="text-xs text-muted-foreground">This week</p>
@@ -92,10 +92,10 @@ export default function DashboardPage() {
           <Card className="modern-card hover-lift animate-scale-in animate-stagger-4">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Courses</CardTitle>
-              <BookOpen className="h-4 w-4 text-orange-500" />
+              <BookOpen className="h-4 w-4 text-primary" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold text-orange-500">{courses.length}</div>
+              <div className="text-2xl font-bold text-primary">{courses.length}</div>
               <p className="text-xs text-muted-foreground">This semester</p>
             </CardContent>
           </Card>
@@ -112,7 +112,7 @@ export default function DashboardPage() {
               <CardDescription>Get started with common tasks</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3">
-              <Button className="w-full justify-start hover-lift group" onClick={() => router.push("/calendar")}>
+              <Button variant="outline" className="w-full justify-start hover-lift group bg-muted/50 hover:bg-muted" onClick={() => router.push("/calendar")}>
                 <Calendar className="h-4 w-4 mr-2 group-hover:scale-110 transition-transform duration-200" />
                 View Calendar
               </Button>
@@ -130,7 +130,7 @@ export default function DashboardPage() {
           <Card className="modern-card animate-slide-up animate-stagger-2">
             <CardHeader>
               <CardTitle className="flex items-center">
-                <div className="w-2 h-2 bg-green-500 rounded-full mr-3" />
+                <div className="w-2 h-2 bg-primary rounded-full mr-3" />
                 Getting Started
               </CardTitle>
               <CardDescription>Tips to maximize your productivity</CardDescription>
@@ -138,9 +138,9 @@ export default function DashboardPage() {
             <CardContent>
               <div className="space-y-4">
                 {[
-                  { color: 'bg-blue-500', title: 'Add your courses to organize assignments', sub: 'Start by creating courses' },
-                  { color: 'bg-green-500', title: 'Track deadlines in the calendar', sub: 'Never miss an assignment' },
-                  { color: 'bg-purple-500', title: 'Use focus sessions to stay productive', sub: 'Track your study time' },
+                  { color: 'bg-white', title: 'Add your courses to organize assignments', sub: 'Start by creating courses' },
+                  { color: 'bg-white/60', title: 'Track deadlines in the calendar', sub: 'Never miss an assignment' },
+                  { color: 'bg-white/30', title: 'Use focus sessions to stay productive', sub: 'Track your study time' },
                 ].map((item, i) => (
                   <div key={i} className={`flex items-center space-x-3 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors duration-200 animate-fade-in animate-stagger-${i + 1}`}>
                     <div className={`w-2 h-2 ${item.color} rounded-full`} />

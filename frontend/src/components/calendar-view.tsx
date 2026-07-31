@@ -79,13 +79,13 @@ export function CalendarView({ events, onDateClick, selectedDate }: CalendarView
   const getEventTypeColor = (type: string) => {
     switch (type) {
       case 'assignment':
-        return 'bg-blue-500'
+        return 'bg-white'
       case 'exam':
-        return 'bg-red-500'
+        return 'bg-white/50'
       case 'presentation':
-        return 'bg-purple-500'
+        return 'bg-white/70'
       default:
-        return 'bg-gray-500'
+        return 'bg-white/30'
     }
   }
 

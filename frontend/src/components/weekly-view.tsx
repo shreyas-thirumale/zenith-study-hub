@@ -58,11 +58,11 @@ function getDayKey(dayIndex: number): string {
 }
 
 const EVENT_TYPE_COLORS: Record<string, string> = {
-  assignment:   'bg-blue-500/20 border-blue-500 text-blue-400',
-  exam:         'bg-red-500/20 border-red-500 text-red-400',
-  presentation: 'bg-purple-500/20 border-purple-500 text-purple-400',
-  reading:      'bg-yellow-500/20 border-yellow-500 text-yellow-400',
-  custom:       'bg-gray-500/20 border-gray-500 text-gray-400',
+  assignment:   'bg-white/10 border-white/40 text-foreground',
+  exam:         'bg-destructive/20 border-destructive text-destructive-foreground',
+  presentation: 'bg-white/15 border-white/50 text-foreground',
+  reading:      'bg-white/8 border-white/30 text-foreground',
+  custom:       'bg-white/5 border-white/20 text-muted-foreground',
 }
 
 export function WeeklyView({
@@ -215,8 +215,8 @@ export function WeeklyView({
                     style={{ top: nowTop }}
                   >
                     <div className="relative flex items-center">
-                      <div className="w-2 h-2 rounded-full bg-red-500 -ml-1 shrink-0" />
-                      <div className="flex-1 h-px bg-red-500" />
+                      <div className="w-2 h-2 rounded-full bg-destructive -ml-1 shrink-0" />
+                      <div className="flex-1 h-px bg-destructive" />
                     </div>
                   </div>
                 )}

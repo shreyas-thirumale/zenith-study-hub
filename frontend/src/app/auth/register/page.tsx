@@ -52,10 +52,10 @@ export default function RegisterPage() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 dark:from-background dark:via-background dark:to-accent/10 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8 animate-swipe-up">
-          <div className="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-4">
-            <GraduationCap className="h-8 w-8 text-white" />
+          <div className="inline-flex items-center justify-center w-14 h-14 bg-foreground rounded-2xl mb-4">
+            <GraduationCap className="h-8 w-8 text-background" />
           </div>
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold text-foreground">
             Zenith Study Hub
           </h1>
         </div>
@@ -117,7 +117,7 @@ export default function RegisterPage() {
                   value={formData.confirmPassword}
                   onChange={e => setFormData(f => ({ ...f, confirmPassword: e.target.value }))} required />
               </div>
-              <Button type="submit" className="w-full hover-lift bg-gradient-to-r from-primary to-purple-600 hover:from-primary/90 hover:to-purple-600/90 h-11"
+              <Button type="submit" className="w-full hover-lift h-11"
                 disabled={loading}>
                 {loading ? 'Creating account...' : 'Create Account'}
               </Button>

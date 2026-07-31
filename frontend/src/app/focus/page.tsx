@@ -74,7 +74,7 @@ export default function FocusPage() {
           <div className="lg:col-span-2">
             <Card className="modern-card mb-6 animate-scale-in">
               <CardHeader className="text-center">
-                <CardTitle className="text-2xl bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                <CardTitle className="text-2xl text-foreground">
                   Focus Timer
                 </CardTitle>
                 <CardDescription>
@@ -97,9 +97,9 @@ export default function FocusPage() {
                   {!activeSession ? (
                     <>
                       {[
-                        { label: '25 min', duration: 1500, className: 'bg-green-600 hover:bg-green-700' },
+                        { label: '25 min', duration: 1500, className: 'bg-primary hover:bg-primary/90' },
                         { label: '30 min', duration: 1800, className: 'bg-primary hover:bg-primary/90' },
-                        { label: '45 min', duration: 2700, className: 'bg-purple-600 hover:bg-purple-700' },
+                        { label: '45 min', duration: 2700, className: 'bg-primary hover:bg-primary/90' },
                       ].map(({ label, duration, className }, i) => (
                         <Button key={label} size="lg" onClick={() => startSession(duration)}
                           className={`${className} hover-lift animate-slide-up animate-stagger-${i + 1}`}
@@ -116,7 +116,7 @@ export default function FocusPage() {
                         </Button>
                       ) : (
                         <Button size="lg" onClick={() => setIsRunning(true)}
-                          className="bg-green-600 hover:bg-green-700 hover-lift">
+                          className="bg-primary hover:bg-primary/90 hover-lift">
                           <Play className="h-5 w-5 mr-2" />Resume
                         </Button>
                       )}
@@ -173,9 +173,9 @@ export default function FocusPage() {
               <CardContent className="space-y-4">
                 {[
                   { value: formatDuration(focusStats?.weekSeconds ?? 0), label: 'This Week', color: 'text-primary text-3xl' },
-                  { value: formatDuration(focusStats?.totalSeconds ?? 0), label: 'Total Focus Time', color: 'text-purple-500 text-3xl' },
-                  { value: String(focusStats?.totalSessions ?? 0), label: 'Sessions Completed', color: 'text-green-600 text-2xl' },
-                  { value: `${focusStats?.averageSessionMinutes ?? 0}m`, label: 'Average Session', color: 'text-purple-600 text-2xl' },
+                  { value: formatDuration(focusStats?.totalSeconds ?? 0), label: 'Total Focus Time', color: 'text-foreground text-3xl' },
+                  { value: String(focusStats?.totalSessions ?? 0), label: 'Sessions Completed', color: 'text-foreground text-2xl' },
+                  { value: `${focusStats?.averageSessionMinutes ?? 0}m`, label: 'Average Session', color: 'text-muted-foreground text-2xl' },
                 ].map((stat, i) => (
                   <div key={i} className={`text-center animate-fade-in animate-stagger-${i + 1}`}>
                     <div className={`font-bold ${stat.color}`}>{stat.value}</div>
@@ -189,9 +189,9 @@ export default function FocusPage() {
               <CardHeader><CardTitle>Tips</CardTitle></CardHeader>
               <CardContent className="space-y-3 text-sm">
                 {[
-                  { color: 'bg-blue-500', text: 'Use the Pomodoro technique: 25 minutes of focused work followed by a 5-minute break' },
-                  { color: 'bg-green-500', text: 'Find a quiet environment free from distractions' },
-                  { color: 'bg-purple-500', text: 'Set specific goals for each focus session' },
+                  { color: 'bg-white', text: 'Use the Pomodoro technique: 25 minutes of focused work followed by a 5-minute break' },
+                  { color: 'bg-white/60', text: 'Find a quiet environment free from distractions' },
+                  { color: 'bg-white/30', text: 'Set specific goals for each focus session' },
                 ].map((tip, i) => (
                   <div key={i} className="flex items-start">
                     <div className={`w-2 h-2 ${tip.color} rounded-full mt-2 mr-3 shrink-0`} />

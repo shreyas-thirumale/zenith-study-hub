@@ -209,12 +209,16 @@ export function useCreateEvent() {
   return useMutation({
     mutationFn: async (data: Omit<CalendarEvent, 'id'>) => {
       const { data: { user } } = await supabase.auth.getUser()
+      if (!user) throw new Error('Not authenticated')
       const { data: event, error } = await supabase
         .from('calendar_events')
-        .insert({ ...data, user_id: user!.id })
+        .insert({ ...data, user_id: user.id })
         .select()
         .single()
-      if (error) throw error
+      if (error) {
+        console.error('Supabase insert error:', error)
+        throw error
+      }
       return event
     },
     onSuccess: (newEvent) => {
@@ -223,7 +227,10 @@ export function useCreateEvent() {
       )
       toast.success('Event added!')
     },
-    onError: () => toast.error('Failed to add event'),
+    onError: (err: any) => {
+      console.error('Create event error:', err)
+      toast.error(err?.message ?? 'Failed to add event')
+    },
   })
 }
 

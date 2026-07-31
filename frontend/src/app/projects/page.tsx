@@ -71,14 +71,14 @@ export default function ProjectsPage() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active":    return "bg-green-100 text-green-800 border-green-200";
-      case "completed": return "bg-blue-100 text-blue-800 border-blue-200";
-      case "archived":  return "bg-gray-100 text-gray-800 border-gray-200";
-      default:          return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      case "active":    return "bg-white/10 text-white border-white/20";
+      case "completed": return "bg-white/20 text-white border-white/30";
+      case "archived":  return "bg-white/5 text-white/60 border-white/10";
+      default:          return "bg-white/10 text-white border-white/20";
     }
   };
 
-  const getProgressColor = (p: number) => p >= 80 ? "bg-green-500" : p >= 50 ? "bg-yellow-500" : "bg-blue-500";
+  const getProgressColor = (p: number) => p >= 80 ? "bg-white" : p >= 50 ? "bg-white/70" : "bg-white/40";
 
   const formatDate = (d?: string) =>
     d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "No due date";

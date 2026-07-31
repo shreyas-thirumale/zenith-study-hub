@@ -1,9 +1,13 @@
 import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import { Exo_2 } from 'next/font/google'
 import './globals.css'
 import { Providers } from './providers'
 
-const inter = Inter({ subsets: ['latin'] })
+const exo2 = Exo_2({
+  subsets: ['latin'],
+  variable: '--font-exo2',
+  weight: ['300', '400', '500', '600', '700', '800'],
+})
 
 export const metadata: Metadata = {
   title: 'Zenith Study Hub',
@@ -39,7 +43,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={inter.className} suppressHydrationWarning>
+      <body className={`${exo2.variable} font-sans`} suppressHydrationWarning>
         <Providers>
           {children}
         </Providers>
